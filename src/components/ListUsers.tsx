@@ -1,31 +1,23 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { useLocation, useParams } from "react-router-dom";
 
-import { ListUsersArray } from "../Types/listUsers.types";
 import User from "./User";
 
+import { useGetUsers } from "../Hooks/useGetUsers";
+
 const ListUsers = () => {
-  const [users, setUsers] = useState<ListUsersArray>([]);
+  let { id } = useParams();
+  let location = useLocation();
+
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const loadingDiv = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const getData = async () => {
-      const response = await axios.get(
-        `http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com/user/${currentPage}/20`
-      );
-      setUsers([...users, ...response.data.list]);
-    };
-
-    getData();
-
-    /**
-     * There is no need to mention users in dep array because we are fetching data according to currentPage size change during scroll
-     * mentioning users in dep array will cause infinite rerender
-     */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+  const url =
+    location.pathname === "/"
+      ? `http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com/user/${currentPage}/20`
+      : `http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com/user/${id}/friends/${currentPage}/20`;
+  const { users } = useGetUsers(url, currentPage);
 
   useEffect(() => {
     const onScroll = () => {
