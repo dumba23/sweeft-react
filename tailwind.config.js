@@ -2,8 +2,8 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    fontFamily: {
-      body: ["Helvetica", "Neue"],
+    screens: {
+      lg: { max: "990px" },
     },
     extend: {},
   },
